@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package com.example.demo.repository.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,9 +7,13 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.entity.Book;
+import com.example.demo.exception.LibraryNotFoundException;
+import com.example.demo.repository.BookRepository;
 
 @Repository
 public class BookRepositoryImpl implements BookRepository {
@@ -35,7 +39,11 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Long deleteBook(Long id) {
-        DB_BOOK.remove(id);
+        try {
+            DB_BOOK.remove(id);
+        } catch (LibraryNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found", ex);
+        }
         return id;
     }
 

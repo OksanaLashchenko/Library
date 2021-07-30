@@ -13,12 +13,4 @@ public class Reader {
     private String lastName;
     private String firstName;
     private List<Book> books = new ArrayList<>();
-
-    public Reader() {
-
-    }
-
-    public Reader(Long id) {
-        this.id = id;
-    }
 }

@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class BookController {
     private final BookService bookService;
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Book>> getAllBooks() {
         return ResponseEntity.ok(bookService.findAllBooks());
     }
@@ -40,11 +40,5 @@ public class BookController {
     @DeleteMapping("/{id}")
     public Long deleteBook(@PathVariable Long id) {
         return bookService.deleteBook(id);
-    }
-
-    @GetMapping("/{bookId}/{readerId}")
-    public ResponseEntity<Book> takeBook(@PathVariable("bookId") Long bookId,
-                                         @PathVariable("readerId") Long readerId) {
-        return ResponseEntity.ok(bookService.takeBook(bookId, readerId));
     }
 }

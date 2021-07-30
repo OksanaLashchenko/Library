@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package com.example.demo.repository.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.Book;
 import com.example.demo.entity.Reader;
+import com.example.demo.repository.ReaderRepository;
 
 @Repository
 public class ReaderRepositoryImpl implements ReaderRepository {

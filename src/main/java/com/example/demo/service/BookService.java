@@ -12,8 +12,4 @@ public interface BookService {
     Long deleteBook(Long id);
 
     Book saveBook(Book book);
-
-    void addBookToReader(Long bookId, Long readerId);
-
-    Book takeBook(Long bookId, Long readerId);
 }

@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entity.Book;
 import com.example.demo.entity.Reader;
 import com.example.demo.service.ReaderService;
 
@@ -22,12 +24,18 @@ public class ReaderController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Reader> getReader(@PathVariable Long id) {
-        return ResponseEntity.of(readerService.findReader(id));
+        return ResponseEntity.ok(readerService.findReader(id));
     }
 
     @PostMapping
     public ResponseEntity<Reader> saveReader(@RequestBody Reader reader) {
         return ResponseEntity.ok(readerService.saveReader(reader));
+    }
+
+    @PostMapping("/take")
+    public ResponseEntity<Book> takeBook(@RequestParam("readerId") Long readerId,
+                                         @RequestParam("bookId") Long bookId) {
+        return ResponseEntity.ok(readerService.takeBook(readerId, bookId));
     }
 
     @DeleteMapping("/{id}")
