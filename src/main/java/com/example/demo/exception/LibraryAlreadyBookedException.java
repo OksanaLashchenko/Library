@@ -9,4 +9,3 @@ public class LibraryAlreadyBookedException extends RuntimeException {
         super(message);
     }
 }
-
