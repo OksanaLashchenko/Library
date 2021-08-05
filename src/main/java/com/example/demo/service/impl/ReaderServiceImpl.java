@@ -12,6 +12,8 @@ import com.example.demo.service.ReaderService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ReaderServiceImpl implements ReaderService {
@@ -41,7 +43,7 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public Book takeBook(Long readerId, Long bookId) {
+    public Reader takeBook(Long readerId, Long bookId) {
         Book book = bookRepository.findBookById(bookId)
                 .orElseThrow(() -> new LibraryNotFoundException(
                         String.format("There is no such a book with id %d", bookId)));
@@ -50,10 +52,25 @@ public class ReaderServiceImpl implements ReaderService {
                         String.format("There is no such a reader with id %d", readerId)));
         if (book.getReader() == null) {
             book.setReader(reader);
-            reader.getBooks().add(book);
+            List<Book> books = reader.getBooks();
+            books.add(book);
         } else {
             throw new LibraryAlreadyBookedException("Book is unavailable for taking");
         }
-        return book;
+        return reader;
+    }
+
+    @Override
+    public Reader returnBook(Long readerId, Long bookId) {
+        Book book = bookRepository.findBookById(bookId)
+                .orElseThrow(() -> new LibraryNotFoundException(
+                        String.format("There is no such a book with id %d", bookId)));
+        Reader reader = readerRepository.findReader(readerId)
+                .orElseThrow(() -> new LibraryNotFoundException(
+                        String.format("There is no such a reader with id %d", readerId)));
+        book.setReader(null);
+        List<Book> books = reader.getBooks();
+        books.remove(book);
+        return reader;
     }
 }

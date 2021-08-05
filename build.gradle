@@ -2,6 +2,18 @@ plugins {
     id 'org.springframework.boot' version '2.5.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'jacoco'
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+test {
+    jacoco {
+        destinationFile = layout.buildDirectory.file('jacoco/jacocoTest.exec').get().asFile
+        classDumpDir = layout.buildDirectory.dir('jacoco/classpathdumps').get().asFile
+    }
 }
 
 apply plugin: 'checkstyle'
@@ -21,6 +33,14 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+jacocoTestReport {
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -33,16 +53,22 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'junit:junit:4.13.1'
+    implementation 'org.projectlombok:lombok:1.18.18'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     testImplementation 'org.mockito:mockito-core:3.+'
     testImplementation 'org.assertj:assertj-core:3.19.0'
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+jacocoTestReport {
+    dependsOn test
 }

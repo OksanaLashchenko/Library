@@ -7,9 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.entity.Book;
 import com.example.demo.exception.LibraryNotFoundException;
@@ -39,33 +37,20 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Long deleteBook(Long id) {
-        try {
-            DB_BOOK.remove(id);
-        } catch (LibraryNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found", ex);
-        }
-        return id;
+        Book book = findBookById(id)
+                .orElseThrow(() -> new LibraryNotFoundException("Book not found"));
+        DB_BOOK.remove(id);
+        return book.getBookId();
     }
 
     @PostConstruct
     private void initBook() {
-        Book book1 = new Book();
-        book1.setBookId(1L);
-        book1.setTitle("Jane Air");
-        book1.setAuthor("Charlotte Bronte");
-        book1.setPages(456);
-
-        Book book2 = new Book();
-        book2.setBookId(2L);
-        book2.setTitle("War and Peace");
-        book2.setAuthor("Lev Tolstoy");
-        book2.setPages(968);
-
-        Book book3 = new Book();
-        book3.setBookId(3L);
-        book3.setTitle("Anna Karenina");
-        book3.setAuthor("Lev Tolstoy");
-        book3.setPages(654);
+        Book book1 = new Book(1L,"Jane Air", "Charlotte Bronte",
+                456, null);
+        Book book2 = new Book(2L, "War and Peace", "Lev Tolstoy",
+                968, null);
+        Book book3 = new Book(3L, "Anna Karenina", "Lev Tolstoy",
+                654, null);
 
         DB_BOOK.put(1L, book1);
         DB_BOOK.put(2L, book2);

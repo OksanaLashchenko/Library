@@ -7,10 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.entity.Book;
 import com.example.demo.entity.Reader;
 import com.example.demo.service.ReaderService;
 
@@ -32,10 +30,16 @@ public class ReaderController {
         return ResponseEntity.ok(readerService.saveReader(reader));
     }
 
-    @PostMapping("/take")
-    public ResponseEntity<Book> takeBook(@RequestParam("readerId") Long readerId,
-                                         @RequestParam("bookId") Long bookId) {
+    @PostMapping("/{readerId}/books/{bookId}")
+    public ResponseEntity<Reader> takeBook(@PathVariable("readerId") Long readerId,
+                                         @PathVariable("bookId") Long bookId) {
         return ResponseEntity.ok(readerService.takeBook(readerId, bookId));
+    }
+
+    @PostMapping("/return/{readerId}/books/{bookId}")
+    public ResponseEntity<Reader> returnBook(@PathVariable("readerId") Long readerId,
+                                             @PathVariable("bookId") Long bookId) {
+        return ResponseEntity.ok(readerService.returnBook(readerId, bookId));
     }
 
     @DeleteMapping("/{id}")
