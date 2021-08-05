@@ -1,8 +1,5 @@
 package com.example.demo.service;
 
-import java.util.Optional;
-
-import com.example.demo.entity.Book;
 import com.example.demo.entity.Reader;
 
 public interface ReaderService {
@@ -12,5 +9,7 @@ public interface ReaderService {
 
     Reader findReader(Long id);
 
-    Book takeBook(Long readerId, Long bookId);
+    Reader takeBook(Long readerId, Long bookId);
+
+    Reader returnBook(Long readerId, Long bookId);
 }

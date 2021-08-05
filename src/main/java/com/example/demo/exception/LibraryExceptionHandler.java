@@ -13,7 +13,7 @@ public class LibraryExceptionHandler {
     private static final HttpStatus BAD_REQUEST = HttpStatus.BAD_REQUEST;
 
     @ExceptionHandler(value = {LibraryNotFoundException.class})
-    public ResponseEntity<Object> handleLibraryNotFoundException(LibraryNotFoundException e) {
+    public ResponseEntity<LibraryException> handleLibraryNotFoundException(LibraryNotFoundException e) {
         LibraryException libraryException = new LibraryException(
                 e.getMessage(),
                 NOT_FOUND,
