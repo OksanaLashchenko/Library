@@ -4,13 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
-import com.example.demo.entity.Book;
-import com.example.demo.entity.Reader;
-import com.example.demo.exception.LibraryAlreadyBookedException;
-import com.example.demo.exception.LibraryNotFoundException;
-import com.example.demo.repository.BookRepository;
-import com.example.demo.repository.ReaderRepository;
-import com.example.demo.service.impl.ReaderServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.example.demo.entity.Book;
+import com.example.demo.entity.Reader;
+import com.example.demo.exception.LibraryAlreadyBookedException;
+import com.example.demo.exception.LibraryNotFoundException;
+import com.example.demo.repository.BookRepository;
+import com.example.demo.repository.ReaderRepository;
+import com.example.demo.service.impl.ReaderServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class ReaderServiceTest {
@@ -99,10 +100,9 @@ class ReaderServiceTest {
 
     @Test
     void takeBook_WhenBookNotExists_ThenThrowLibraryNotFoundException() {
-        Reader reader = new Reader(4L, "Soyer", "Tom", new ArrayList<>());
         Mockito.when(bookRepository.findBookById(5L))
                 .thenThrow(LibraryNotFoundException.class);
-        Assertions.assertThatThrownBy(() -> readerService.takeBook(reader.getId(), 5L))
+        Assertions.assertThatThrownBy(() -> readerService.takeBook(4L, 5L))
                 .isInstanceOf(LibraryNotFoundException.class);
     }
 
@@ -113,7 +113,7 @@ class ReaderServiceTest {
         Mockito.when(bookRepository.findBookById(1L)).thenReturn(Optional.of(book));
         Mockito.when(readerRepository.findReader(5L))
                 .thenThrow(LibraryNotFoundException.class);
-        Assertions.assertThatThrownBy(() -> readerService.takeBook(5L, book.getBookId()))
+        Assertions.assertThatThrownBy(() -> readerService.takeBook(5L, 1L))
                 .isInstanceOf(LibraryNotFoundException.class);
     }
 
@@ -126,8 +126,8 @@ class ReaderServiceTest {
                 new ArrayList<>());
         Mockito.when(readerRepository.findReader(6L)).thenReturn(Optional.of(readerAlice));
         Mockito.when(bookRepository.findBookById(1L)).thenReturn(Optional.of(book));
-        Assertions.assertThatThrownBy(() ->readerService.takeBook(readerAlice.getId(),
-                book.getBookId())).isInstanceOf(LibraryAlreadyBookedException.class);
+        Assertions.assertThatThrownBy(() -> readerService.takeBook(6L,
+                1L)).isInstanceOf(LibraryAlreadyBookedException.class);
     }
 
     @Test
@@ -145,10 +145,9 @@ class ReaderServiceTest {
 
     @Test
     void returnBook_WhenBookNotExists_ThenThrowLibraryNotFoundException() {
-        Reader reader = new Reader(4L, "Soyer", "Tom", new ArrayList<>());
         Mockito.when(bookRepository.findBookById(5L))
                 .thenThrow(LibraryNotFoundException.class);
-        Assertions.assertThatThrownBy(() -> readerService.returnBook(reader.getId(), 5L))
+        Assertions.assertThatThrownBy(() -> readerService.returnBook(4L, 5L))
                 .isInstanceOf(LibraryNotFoundException.class);
     }
 
@@ -161,6 +160,6 @@ class ReaderServiceTest {
         Mockito.when(readerRepository.findReader(5L))
                 .thenThrow(LibraryNotFoundException.class);
         Assertions.assertThatThrownBy(() -> readerService.returnBook(5L,
-                book.getBookId())).isInstanceOf(LibraryNotFoundException.class);
+                1L)).isInstanceOf(LibraryNotFoundException.class);
     }
 }

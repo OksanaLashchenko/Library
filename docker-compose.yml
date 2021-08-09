@@ -1,0 +1,8 @@
+version: '3'
+services:
+  demo:
+    container_name: library_app
+    restart: on-failure
+    build: ./docker logs
+    ports:
+      - '8080:8080'

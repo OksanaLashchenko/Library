@@ -1,12 +1,17 @@
 package com.example.demo.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,16 +19,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.example.demo.entity.Book;
 import com.example.demo.entity.Reader;
 import com.example.demo.exception.LibraryNotFoundException;
-import com.example.demo.entity.Book;
 import com.example.demo.service.BookService;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(BookController.class)
@@ -103,7 +104,8 @@ class BookControllerTest {
     }
 
     @Test
-    void deleteBook_WhenBookIsNotFound_ThenThrowLibraryNotFoundException() throws Exception{
+    void deleteBook_WhenBookIsNotFound_ThenThrowLibraryNotFoundException()
+            throws Exception {
         Long bookId = 5L;
         Mockito.when(bookService.findBookById(bookId))
                 .thenThrow(LibraryNotFoundException.class);
