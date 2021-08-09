@@ -1,5 +1,10 @@
 package com.example.demo.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
@@ -21,11 +26,6 @@ import com.example.demo.service.BookService;
 import com.example.demo.service.ReaderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ReaderController.class)
 class ReaderControllerTest {
@@ -39,7 +39,7 @@ class ReaderControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    void findReader_WhenIsOk_ThemReturnReader() throws Exception{
+    void findReader_WhenIsOk_ThemReturnReader() throws Exception {
         Long readerId = 1L;
         Reader reader = new Reader(1L, "Kharchenko", "Victoria",
                 Collections.emptyList());
@@ -85,7 +85,8 @@ class ReaderControllerTest {
     }
 
     @Test
-    void deleteReader_WhenReaderIsNotFound_ThenThrowLibraryNotFoundException() throws Exception{
+    void deleteReader_WhenReaderIsNotFound_ThenThrowLibraryNotFoundException()
+            throws Exception {
         Long readerId = 5L;
         Mockito.when(readerService.findReader(readerId))
                 .thenThrow(LibraryNotFoundException.class);
