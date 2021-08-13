@@ -7,7 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -28,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(BookController.class)
+@ContextConfiguration(classes = {BookController.class})
 class BookControllerTest {
     @MockBean
     private BookService bookService;
@@ -60,9 +64,11 @@ class BookControllerTest {
     void findBookById_WhenIsOk_ThenReturnBook() throws Exception {
         Long bookId = 1L;
         Reader reader = new Reader(1L, "Victoria", "Kharchenko",
-                Collections.emptyList());
+                Collections.emptySet());
+        Set<Reader> readerSet = new HashSet<>();
+        readerSet.add(reader);
         Book book = new Book(1L,"Jane Air", "Charlotte Bronte",
-                456, reader);
+                456, readerSet);
         String valueAsString = objectMapper.writeValueAsString(book);
         Mockito.when(bookService.findBookById(bookId)).thenReturn(book);
         mockMvc.perform(MockMvcRequestBuilders.get("/books/{id}", bookId))

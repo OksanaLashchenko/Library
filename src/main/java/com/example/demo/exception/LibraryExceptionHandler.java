@@ -13,9 +13,10 @@ public class LibraryExceptionHandler {
     private static final HttpStatus BAD_REQUEST = HttpStatus.BAD_REQUEST;
 
     @ExceptionHandler(value = {LibraryNotFoundException.class})
-    public ResponseEntity<LibraryException> handleLibraryNotFoundException(LibraryNotFoundException e) {
+    public ResponseEntity<LibraryException> handleLibraryNotFoundException(
+            LibraryNotFoundException exception) {
         LibraryException libraryException = new LibraryException(
-                e.getMessage(),
+                exception.getMessage(),
                 NOT_FOUND,
                 LocalDateTime.now());
         return new ResponseEntity<>(libraryException, NOT_FOUND);
@@ -23,9 +24,9 @@ public class LibraryExceptionHandler {
 
     @ExceptionHandler(value = {LibraryAlreadyBookedException.class})
     public ResponseEntity<Object> handleLibraryAlreadyBookedException(
-            LibraryAlreadyBookedException e) {
+            LibraryAlreadyBookedException exception) {
         LibraryException libraryException = new LibraryException(
-                e.getMessage(),
+                exception.getMessage(),
                 BAD_REQUEST,
                 LocalDateTime.now());
         return new ResponseEntity<>(libraryException,BAD_REQUEST);

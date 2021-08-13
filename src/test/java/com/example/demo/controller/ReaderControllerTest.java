@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ReaderController.class)
+@ContextConfiguration(classes = {ReaderController.class})
 class ReaderControllerTest {
     @MockBean
     ReaderService readerService;
@@ -42,7 +44,7 @@ class ReaderControllerTest {
     void findReader_WhenIsOk_ThemReturnReader() throws Exception {
         Long readerId = 1L;
         Reader reader = new Reader(1L, "Kharchenko", "Victoria",
-                Collections.emptyList());
+                Collections.emptySet());
         String valueAsString = objectMapper.writeValueAsString(reader);
         Mockito.when(readerService.findReader(readerId)).thenReturn(reader);
         mockMvc.perform(MockMvcRequestBuilders.get("/readers/{id}", readerId))
@@ -62,7 +64,7 @@ class ReaderControllerTest {
     @Test
     void saveReader_WhenIsOk_ThenReturnReader() throws Exception {
         Reader reader = new Reader(1L, "Kharchenko", "Victoria",
-                Collections.emptyList());
+                Collections.emptySet());
         String valueAsString = objectMapper.writeValueAsString(reader);
         Mockito.when(readerService.findReader(reader.getId())).thenReturn(reader);
         Mockito.when(readerService.saveReader(any(Reader.class)))
@@ -77,7 +79,7 @@ class ReaderControllerTest {
     void deleteReader_WhenIsOk() throws Exception {
         Long readerId = 1L;
         Reader reader = new Reader(1L, "Kharchenko", "Victoria",
-                Collections.emptyList());
+                Collections.emptySet());
         Mockito.when(readerService.findReader(readerId)).thenReturn(reader);
         Mockito.when(readerService.deleteReader(readerId)).thenReturn(readerId);
         mockMvc.perform(delete("/readers/{id}", readerId))
@@ -101,7 +103,7 @@ class ReaderControllerTest {
         Long readerId = 1L;
         Long bookId = 1L;
         Reader reader = new Reader(1L, "Kharchenko", "Victoria",
-                Collections.emptyList());
+                Collections.emptySet());
         String valueAsString = objectMapper.writeValueAsString(reader);
         Mockito.when(readerService.takeBook(readerId, bookId)).thenReturn(reader);
         mockMvc.perform(post("/readers/{readerId}/books/{bookId}", readerId, bookId)
@@ -150,7 +152,7 @@ class ReaderControllerTest {
         Long readerId = 1L;
         Long bookId = 1L;
         Reader reader = new Reader(1L, "Kharchenko", "Victoria",
-                Collections.emptyList());
+                Collections.emptySet());
         String valueAsString = objectMapper.writeValueAsString(reader);
         Mockito.when(readerService.returnBook(readerId, bookId)).thenReturn(reader);
         mockMvc.perform(post("/readers/return/{readerId}/books/{bookId}",
