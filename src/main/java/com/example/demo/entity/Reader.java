@@ -1,8 +1,6 @@
 package com.example.demo.entity;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -14,6 +12,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import com.example.demo.lib.ContactNumberConstraint;
+import com.example.demo.lib.EmailConstraint;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -31,9 +34,16 @@ import lombok.Setter;
 public class Reader {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @NotNull
     private Long id;
+    @NotBlank
     private String lastName;
+    @NotBlank
     private String firstName;
+    @EmailConstraint
+    private String email;
+    @ContactNumberConstraint
+    private String contactNumber;
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE

@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import static org.mockito.Mockito.times;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -41,7 +40,8 @@ class ReaderServiceTest {
 
     @Test
     void findReader_WhenReaderExists_ThenReturnReader() {
-        Reader reader = new Reader(4L, "Soyer", "Tom", null);
+        Reader reader = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
+                "0509999999", null);
         Mockito.when(readerRepository.findById(4L)).thenReturn(Optional.of(reader));
         Reader resultReader = readerService.findReader(4L);
         Assertions.assertThat(resultReader.getId()).isEqualTo(4L);
@@ -52,7 +52,8 @@ class ReaderServiceTest {
 
     @Test
     void deleteReader_WhenReaderExists_ThenReturnReaderId() {
-        Reader reader = new Reader(1L, "Soyer", "Tom", Collections.emptySet());
+        Reader reader = new Reader(1L, "Soyer", "Tom", "tom@gmail.com",
+                "0509999999", null);
         Mockito.when(readerRepository.findById(1L)).thenReturn(Optional.of(reader));
         readerService.deleteReader(1L);
         Mockito.verify(readerRepository, times(1)).delete(reader);
@@ -68,7 +69,8 @@ class ReaderServiceTest {
 
     @Test
     void saveReader_WhenReaderExists_ThenUpdateReader() {
-        Reader reader = new Reader(1L, "Soyer", "Tom", null);
+        Reader reader = new Reader(1L, "Soyer", "Tom", "tom@gmail.com",
+                "0509999999", null);
         Mockito.when(readerRepository.save(reader)).thenReturn(reader);
         Reader resultReader = readerService.saveReader(reader);
         Assertions.assertThat(resultReader.getId()).isEqualTo(1L);
@@ -79,7 +81,8 @@ class ReaderServiceTest {
 
     @Test
     void saveReader_WhenReaderNotExists_ThenSaveReader() {
-        Reader reader = new Reader(4L, "Soyer", "Tom", null);
+        Reader reader = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
+                "0509999999", null);
         Mockito.when(readerRepository.save(reader)).thenReturn(reader);
         Reader resultReader = readerService.saveReader(reader);
         Assertions.assertThat(resultReader.getId()).isEqualTo(4L);
@@ -92,7 +95,8 @@ class ReaderServiceTest {
     void takeBook_WhenBookIsAvailable_ThenReturnReader() {
         Book book =  new Book(1L, "Jane Air", "Charlotte Bronte",
                 456, new HashSet<>());
-        Reader reader = new Reader(4L, "Soyer", "Tom", new HashSet<>());
+        Reader reader = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
+                "0509999999", null);
         Mockito.when(readerRepository.findById(reader.getId()))
                         .thenReturn(Optional.of(reader));
         Mockito.when(bookRepository.findById(book.getBookId()))
@@ -122,13 +126,14 @@ class ReaderServiceTest {
 
     @Test
     void takeBook_WhenBookIsTaken_ThenThrowLibraryAlreadyBookedException() {
-        Reader readerTom = new Reader(4L, "Soyer", "Tom", new HashSet<>());
+        Reader readerTom = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
+                "0509999999", null);
         Set<Reader> readerSet = new HashSet<>();
         readerSet.add(readerTom);
         Book book =  new Book(1L, "Jane Air", "Charlotte Bronte",
                 456, readerSet);
         Reader readerAlice = new Reader(6L, "WonderLand", "Alice",
-                new HashSet<>());
+                "alice@gmail.com", "0974443322", new HashSet<>());
         readerSet.add(readerAlice);
         Mockito.when(readerRepository.findById(6L)).thenReturn(Optional.of(readerAlice));
         Mockito.when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
@@ -138,7 +143,8 @@ class ReaderServiceTest {
 
     @Test
     void returnBook_WhenIsOk_ThenReturnReader() {
-        Reader reader = new Reader(4L, "Soyer", "Tom", new HashSet<>());
+        Reader reader = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
+                "0509999999", null);
         Set<Reader> readerSet = new HashSet<>();
         readerSet.add(reader);
         Book book =  new Book(1L, "Jane Air", "Charlotte Bronte",
@@ -161,7 +167,8 @@ class ReaderServiceTest {
 
     @Test
     void returnBook_WhenReaderNotExists_ThenThrowLibraryNotFoundException() {
-        Reader readerTom = new Reader(4L, "Soyer", "Tom", new HashSet<>());
+        Reader readerTom = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
+                "0509999999", null);
         Set<Reader> readerSet = new HashSet<>();
         readerSet.add(readerTom);
         Book book =  new Book(1L, "Jane Air", "Charlotte Bronte",

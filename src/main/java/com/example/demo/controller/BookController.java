@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,17 +29,17 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> findBookById(@PathVariable Long id) {
+    public ResponseEntity<Book> findBookById(@PathVariable @Valid Long id) {
         return ResponseEntity.ok(bookService.findBookById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Book> saveBook(@RequestBody Book book) {
+    public ResponseEntity<Book> saveBook(@RequestBody @Valid Book book) {
         return ResponseEntity.ok(bookService.saveBook(book));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> deleteBook(@PathVariable Long id) {
+    public ResponseEntity<Long> deleteBook(@PathVariable @Valid Long id) {
         return ResponseEntity.ok(bookService.deleteBook(id));
     }
 }

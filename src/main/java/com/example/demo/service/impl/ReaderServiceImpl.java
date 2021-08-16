@@ -1,6 +1,5 @@
 package com.example.demo.service.impl;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -88,26 +87,5 @@ public class ReaderServiceImpl implements ReaderService {
                 .forEach(readerToEmpty -> readerToEmpty = null);
         reader.removeBook(book);
         return reader;
-    }
-
-    @Transactional
-    public void initReader() {
-        Reader viktoria = new Reader(1L, "Victoria", "Kharchenko",
-                Collections.emptySet());
-        Reader mark = new Reader(2L, "Mark", "Trigulov",
-                Collections.emptySet());
-        Reader alice = new Reader(3L, "Alice", "Smith",
-                Collections.emptySet());
-        Reader bob = new Reader(4L, "Bob", "Busset",
-                Collections.emptySet());
-
-        readerRepository.save(viktoria);
-        readerRepository.save(mark);
-        readerRepository.save(alice);
-        readerRepository.save(bob);
-
-        viktoria.addBook(bookRepository.getById(1L));
-        viktoria.addBook(bookRepository.getById(2L));
-        mark.addBook(bookRepository.getById(3L));
     }
 }

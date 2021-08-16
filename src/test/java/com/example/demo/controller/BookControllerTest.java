@@ -28,6 +28,7 @@ import com.example.demo.entity.Reader;
 import com.example.demo.exception.LibraryNotFoundException;
 import com.example.demo.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(BookController.class)
@@ -63,7 +64,7 @@ class BookControllerTest {
     @Test
     void findBookById_WhenIsOk_ThenReturnBook() throws Exception {
         Long bookId = 1L;
-        Reader reader = new Reader(1L, "Victoria", "Kharchenko",
+        Reader reader = new Reader(1L, "Victoria", "Kharchenko", "kharchenko@gmail.com", "0501111111",
                 Collections.emptySet());
         Set<Reader> readerSet = new HashSet<>();
         readerSet.add(reader);
@@ -82,6 +83,18 @@ class BookControllerTest {
         Mockito.when(bookService.findBookById(bookId)).thenThrow(LibraryNotFoundException.class);
         mockMvc.perform(MockMvcRequestBuilders.get("/books/{id}", bookId))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void saveBook_WhenArgumentNotValid_ThenReturn400Error() throws Exception {
+        Book book = new Book(1L,"", "Charlotte Bronte",
+                456, Collections.emptySet());
+        String valueAsString = objectMapper.writeValueAsString(book);
+        Mockito.when(bookService.saveBook(book)).thenThrow(MethodArgumentNotValidException.class);
+        mockMvc.perform(MockMvcRequestBuilders.post("/books")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(valueAsString))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

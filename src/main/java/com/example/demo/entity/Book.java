@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,9 +31,13 @@ import lombok.Setter;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @NotNull
     private Long bookId;
+    @NotBlank
     private String title;
+    @NotBlank
     private String author;
+    @Min(6)
     private int pages;
     @JsonIgnore
     @ManyToMany(mappedBy = "books")
