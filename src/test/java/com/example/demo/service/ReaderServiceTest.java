@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import static org.mockito.Mockito.times;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -41,19 +42,19 @@ class ReaderServiceTest {
     @Test
     void findReader_WhenReaderExists_ThenReturnReader() {
         Reader reader = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
-                "0509999999", null);
+                "0509999999", Collections.emptySet());
         Mockito.when(readerRepository.findById(4L)).thenReturn(Optional.of(reader));
         Reader resultReader = readerService.findReader(4L);
         Assertions.assertThat(resultReader.getId()).isEqualTo(4L);
         Assertions.assertThat(resultReader.getFirstName()).isEqualTo("Tom");
         Assertions.assertThat(resultReader.getLastName()).isEqualTo("Soyer");
-        Assertions.assertThat(resultReader.getBooks()).isNull();
+        Assertions.assertThat(resultReader.getBooks()).isEmpty();
     }
 
     @Test
     void deleteReader_WhenReaderExists_ThenReturnReaderId() {
         Reader reader = new Reader(1L, "Soyer", "Tom", "tom@gmail.com",
-                "0509999999", null);
+                "0509999999", Collections.emptySet());
         Mockito.when(readerRepository.findById(1L)).thenReturn(Optional.of(reader));
         readerService.deleteReader(1L);
         Mockito.verify(readerRepository, times(1)).delete(reader);
@@ -70,25 +71,25 @@ class ReaderServiceTest {
     @Test
     void saveReader_WhenReaderExists_ThenUpdateReader() {
         Reader reader = new Reader(1L, "Soyer", "Tom", "tom@gmail.com",
-                "0509999999", null);
+                "0509999999", Collections.emptySet());
         Mockito.when(readerRepository.save(reader)).thenReturn(reader);
         Reader resultReader = readerService.saveReader(reader);
         Assertions.assertThat(resultReader.getId()).isEqualTo(1L);
         Assertions.assertThat(resultReader.getLastName()).isEqualTo("Soyer");
         Assertions.assertThat(resultReader.getFirstName()).isEqualTo("Tom");
-        Assertions.assertThat(resultReader.getBooks()).isNull();
+        Assertions.assertThat(resultReader.getBooks()).isEmpty();
     }
 
     @Test
     void saveReader_WhenReaderNotExists_ThenSaveReader() {
         Reader reader = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
-                "0509999999", null);
+                "0509999999", Collections.emptySet());
         Mockito.when(readerRepository.save(reader)).thenReturn(reader);
         Reader resultReader = readerService.saveReader(reader);
         Assertions.assertThat(resultReader.getId()).isEqualTo(4L);
         Assertions.assertThat(resultReader.getLastName()).isEqualTo("Soyer");
         Assertions.assertThat(resultReader.getFirstName()).isEqualTo("Tom");
-        Assertions.assertThat(resultReader.getBooks()).isNull();
+        Assertions.assertThat(resultReader.getBooks()).isEmpty();
     }
 
     @Test
@@ -96,12 +97,12 @@ class ReaderServiceTest {
         Book book =  new Book(1L, "Jane Air", "Charlotte Bronte",
                 456, new HashSet<>());
         Reader reader = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
-                "0509999999", null);
+                "0509999999", new HashSet<>());
         Mockito.when(readerRepository.findById(reader.getId()))
                         .thenReturn(Optional.of(reader));
         Mockito.when(bookRepository.findById(book.getBookId()))
                 .thenReturn(Optional.of(book));
-        Assertions.assertThat(readerService.takeBook(reader.getId(), book.getBookId()))
+        Assertions.assertThat(readerService.takeBook(4L, 1L))
                 .isEqualTo(reader);
     }
 
@@ -116,7 +117,7 @@ class ReaderServiceTest {
     @Test
     void takeBook_WhenReaderNotExists_ThenThrowLibraryNotFoundException() {
         Book book =  new Book(1L, "Jane Air", "Charlotte Bronte",
-                456, null);
+                456, Collections.emptySet());
         Mockito.when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
         Mockito.when(readerRepository.findById(5L))
                 .thenThrow(LibraryNotFoundException.class);
@@ -127,7 +128,7 @@ class ReaderServiceTest {
     @Test
     void takeBook_WhenBookIsTaken_ThenThrowLibraryAlreadyBookedException() {
         Reader readerTom = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
-                "0509999999", null);
+                "0509999999", new HashSet<>());
         Set<Reader> readerSet = new HashSet<>();
         readerSet.add(readerTom);
         Book book =  new Book(1L, "Jane Air", "Charlotte Bronte",
@@ -144,7 +145,7 @@ class ReaderServiceTest {
     @Test
     void returnBook_WhenIsOk_ThenReturnReader() {
         Reader reader = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
-                "0509999999", null);
+                "0509999999", Collections.emptySet());
         Set<Reader> readerSet = new HashSet<>();
         readerSet.add(reader);
         Book book =  new Book(1L, "Jane Air", "Charlotte Bronte",
@@ -168,7 +169,7 @@ class ReaderServiceTest {
     @Test
     void returnBook_WhenReaderNotExists_ThenThrowLibraryNotFoundException() {
         Reader readerTom = new Reader(4L, "Soyer", "Tom", "tom@gmail.com",
-                "0509999999", null);
+                "0509999999", Collections.emptySet());
         Set<Reader> readerSet = new HashSet<>();
         readerSet.add(readerTom);
         Book book =  new Book(1L, "Jane Air", "Charlotte Bronte",

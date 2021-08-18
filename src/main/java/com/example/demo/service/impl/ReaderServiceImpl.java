@@ -66,7 +66,6 @@ public class ReaderServiceImpl implements ReaderService {
                 .noneMatch(readerInSet -> readerInSet.equals(reader));
         if (nonExists) {
             reader.addBook(book);
-            book.getReaders().add(reader);
         } else {
             throw new LibraryAlreadyBookedException("Book is unavailable for taking");
         }
@@ -82,9 +81,6 @@ public class ReaderServiceImpl implements ReaderService {
         Reader reader = readerRepository.findById(readerId)
                 .orElseThrow(() -> new LibraryNotFoundException(
                         String.format("There is no such a reader with id %d", readerId)));
-        book.getReaders().stream()
-                .filter(readerInSet -> readerInSet.equals(reader))
-                .forEach(readerToEmpty -> readerToEmpty = null);
         reader.removeBook(book);
         return reader;
     }

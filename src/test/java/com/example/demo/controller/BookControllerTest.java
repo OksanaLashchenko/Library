@@ -28,7 +28,6 @@ import com.example.demo.entity.Reader;
 import com.example.demo.exception.LibraryNotFoundException;
 import com.example.demo.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(BookController.class)
@@ -90,7 +89,6 @@ class BookControllerTest {
         Book book = new Book(1L,"", "Charlotte Bronte",
                 456, Collections.emptySet());
         String valueAsString = objectMapper.writeValueAsString(book);
-        Mockito.when(bookService.saveBook(book)).thenThrow(MethodArgumentNotValidException.class);
         mockMvc.perform(MockMvcRequestBuilders.post("/books")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(valueAsString))

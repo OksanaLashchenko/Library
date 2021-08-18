@@ -47,8 +47,11 @@ public class BookServiceImpl implements BookService {
         return bookRepository.save(book);
     }
 
+    /**
+     * initBook() is a method designed for pre-initializing some books before starting the
+     * Library application.
+     */
     @PostConstruct
-    @Transactional
     public void initBook() {
         Book book1 = new Book(1L, "Jane Air", "Charlotte Bronte",
                 456, Collections.emptySet());

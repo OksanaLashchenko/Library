@@ -33,7 +33,7 @@ import lombok.Setter;
 @Table(name = "readers")
 public class Reader {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     private Long id;
     @NotBlank

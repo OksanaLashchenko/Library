@@ -7,9 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 
-import com.example.demo.entity.Book;
-import com.example.demo.lib.ContactNumberValidator;
-import com.example.demo.lib.EmailValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -26,10 +23,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.example.demo.entity.Reader;
 import com.example.demo.exception.LibraryAlreadyBookedException;
 import com.example.demo.exception.LibraryNotFoundException;
+import com.example.demo.lib.ContactNumberValidator;
+import com.example.demo.lib.EmailValidator;
 import com.example.demo.service.BookService;
 import com.example.demo.service.ReaderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest
@@ -85,8 +83,6 @@ class ReaderControllerTest {
         Reader reader = new Reader(1L, "Victoria", "Kharchenko",
                 "kharchenko@gmailcom", "0501111111", Collections.emptySet());
         String valueAsString = objectMapper.writeValueAsString(reader);
-        Mockito.when(readerService.saveReader(reader))
-                .thenThrow(MethodArgumentNotValidException.class);
         mockMvc.perform(MockMvcRequestBuilders.post("/readers")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(valueAsString))
