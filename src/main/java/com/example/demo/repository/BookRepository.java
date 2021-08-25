@@ -1,16 +1,10 @@
 package com.example.demo.repository;
 
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.Book;
 
-public interface BookRepository {
-    Book saveBook(Book book);
-
-    List<Book> findAll();
-
-    Optional<Book> findBookById(Long id);
-
-    Long deleteBook(Long id);
+@Repository
+public interface BookRepository extends JpaRepository<Book, Long> {
 }

@@ -1,6 +1,9 @@
 package com.example.demo.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Book;
 import com.example.demo.entity.Reader;
@@ -12,8 +15,6 @@ import com.example.demo.service.ReaderService;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ReaderServiceImpl implements ReaderService {
@@ -21,39 +22,50 @@ public class ReaderServiceImpl implements ReaderService {
     private final BookRepository bookRepository;
 
     @Override
+    @Transactional
     public Reader saveReader(Reader reader) {
-        return readerRepository.saveReader(reader);
+        return readerRepository.save(reader);
     }
 
     @Override
+    @Transactional
     public Long deleteReader(Long id) {
-        Reader reader = readerRepository.findReader(id)
+        Reader reader = readerRepository.findById(id)
                 .orElseThrow(() -> new LibraryNotFoundException("Can't find such a reader"));
         reader.getBooks().stream()
-                .map(Book::getReader)
-                .forEach(readerToDelete -> readerToDelete = null);
-        return readerRepository.deleteReader(id);
+                .map(Book::getReaders)
+                .forEach(setReaders -> setReaders.remove(reader));
+        readerRepository.delete(reader);
+        return id;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Reader findReader(Long id) {
-        return readerRepository.findReader(id)
+        return readerRepository.findById(id)
                 .orElseThrow(() -> new LibraryNotFoundException(
                         String.format("Can't find reader by id %d", id)));
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Reader> findAllReaders() {
+        return readerRepository.findAll();
+    }
+
+    @Override
+    @Transactional
     public Reader takeBook(Long readerId, Long bookId) {
-        Book book = bookRepository.findBookById(bookId)
+        Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new LibraryNotFoundException(
                         String.format("There is no such a book with id %d", bookId)));
-        Reader reader = readerRepository.findReader(readerId)
+        Reader reader = readerRepository.findById(readerId)
                 .orElseThrow(() -> new LibraryNotFoundException(
                         String.format("There is no such a reader with id %d", readerId)));
-        if (book.getReader() == null) {
-            book.setReader(reader);
-            List<Book> books = reader.getBooks();
-            books.add(book);
+        boolean nonExists = book.getReaders().stream()
+                .noneMatch(readerInSet -> readerInSet.equals(reader));
+        if (nonExists) {
+            reader.addBook(book);
         } else {
             throw new LibraryAlreadyBookedException("Book is unavailable for taking");
         }
@@ -61,16 +73,15 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
+    @Transactional
     public Reader returnBook(Long readerId, Long bookId) {
-        Book book = bookRepository.findBookById(bookId)
+        Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new LibraryNotFoundException(
                         String.format("There is no such a book with id %d", bookId)));
-        Reader reader = readerRepository.findReader(readerId)
+        Reader reader = readerRepository.findById(readerId)
                 .orElseThrow(() -> new LibraryNotFoundException(
                         String.format("There is no such a reader with id %d", readerId)));
-        book.setReader(null);
-        List<Book> books = reader.getBooks();
-        books.remove(book);
+        reader.removeBook(book);
         return reader;
     }
 }

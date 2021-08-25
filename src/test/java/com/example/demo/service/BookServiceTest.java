@@ -27,7 +27,7 @@ class BookServiceTest {
 
     @Test
     void findBookById_WhenBookNotExist_ThenThrowLibraryNotFoundException() {
-        Mockito.when(bookRepository.findBookById(1L)).thenReturn(Optional.empty());
+        Mockito.when(bookRepository.findById(1L)).thenReturn(Optional.empty());
         Assertions.assertThatThrownBy(() -> bookService.findBookById(1L))
                 .isInstanceOf(LibraryNotFoundException.class);
     }
@@ -36,13 +36,13 @@ class BookServiceTest {
     void findBookById_WhenBookExists_ThenReturnBook() {
         Book book = new Book(1L, "Effective Java", "Bloch",
                 786, null);
-        Mockito.when(bookRepository.findBookById(1L)).thenReturn(Optional.of(book));
+        Mockito.when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
         Book resultBook = bookService.findBookById(1L);
         Assertions.assertThat(resultBook.getBookId()).isEqualTo(1L);
         Assertions.assertThat(resultBook.getTitle()).isEqualTo("Effective Java");
         Assertions.assertThat(resultBook.getAuthor()).isEqualTo("Bloch");
         Assertions.assertThat(resultBook.getPages()).isEqualTo(786);
-        Assertions.assertThat(resultBook.getReader()).isNull();
+        Assertions.assertThat(resultBook.getReaders()).isNull();
     }
 
     @Test
@@ -71,13 +71,16 @@ class BookServiceTest {
 
     @Test
     void deleteBook_WhenBookExists_ThenReturnBookId() {
-        Mockito.when(bookRepository.deleteBook(1L)).thenReturn(1L);
+        Book book = new Book(1L,"Jane Air", "Charlotte Bronte",
+                456, null);
+        Mockito.when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+        bookService.deleteBook(1L);
         Assertions.assertThat(bookService.deleteBook(1L)).isEqualTo(1L);
     }
 
     @Test
     void deleteBook_WhenBookNotExist_ThenThrowLibraryNotFoundException() {
-        Mockito.when(bookRepository.deleteBook(4L))
+        Mockito.when(bookRepository.findById(4L))
                 .thenThrow(LibraryNotFoundException.class);
         Assertions.assertThatThrownBy(() -> bookService.deleteBook(4L))
                 .isInstanceOf(LibraryNotFoundException.class);
@@ -87,25 +90,25 @@ class BookServiceTest {
     void saveBook_WhenBookExists_ThenUpdateBook() {
         Book book = new Book(1L, "Effective Java", "Bloch",
                 786, null);
-        Mockito.when(bookRepository.saveBook(book)).thenReturn(book);
+        Mockito.when(bookRepository.save(book)).thenReturn(book);
         Book resultBook = bookService.saveBook(book);
         Assertions.assertThat(resultBook.getBookId()).isEqualTo(1L);
         Assertions.assertThat(resultBook.getTitle()).isEqualTo("Effective Java");
         Assertions.assertThat(resultBook.getAuthor()).isEqualTo("Bloch");
         Assertions.assertThat(resultBook.getPages()).isEqualTo(786);
-        Assertions.assertThat(resultBook.getReader()).isNull();
+        Assertions.assertThat(resultBook.getReaders()).isNull();
     }
 
     @Test
     void saveBook_WhenBookNotExists_ThenSaveNewBook() {
         Book book = new Book(4L, "Lord of the Rings", "Tolkien",
                 1186, null);
-        Mockito.when(bookRepository.saveBook(book)).thenReturn(book);
+        Mockito.when(bookRepository.save(book)).thenReturn(book);
         Book resultBook = bookService.saveBook(book);
         Assertions.assertThat(resultBook.getBookId()).isEqualTo(4L);
         Assertions.assertThat(resultBook.getTitle()).isEqualTo("Lord of the Rings");
         Assertions.assertThat(resultBook.getAuthor()).isEqualTo("Tolkien");
         Assertions.assertThat(resultBook.getPages()).isEqualTo(1186);
-        Assertions.assertThat(resultBook.getReader()).isNull();
+        Assertions.assertThat(resultBook.getReaders()).isNull();
     }
 }

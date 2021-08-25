@@ -1,8 +1,13 @@
 version: '3'
 services:
-  demo:
-    container_name: library_app
-    restart: on-failure
-    build: ./docker logs
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DATABASE: postgres
+      POSTGRES_USER: postres
+      POSTGRES_PASSWORD: user
     ports:
-      - '8080:8080'
+      - '5433:5433'
+    expose:
+      - '5433'

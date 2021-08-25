@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -22,12 +23,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.example.demo.entity.Reader;
 import com.example.demo.exception.LibraryAlreadyBookedException;
 import com.example.demo.exception.LibraryNotFoundException;
+import com.example.demo.lib.ContactNumberValidator;
+import com.example.demo.lib.EmailValidator;
 import com.example.demo.service.BookService;
 import com.example.demo.service.ReaderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(ReaderController.class)
+@WebMvcTest
+@ContextConfiguration(classes = {ReaderController.class,
+        ContactNumberValidator.class, EmailValidator.class})
 class ReaderControllerTest {
     @MockBean
     ReaderService readerService;
@@ -41,8 +46,8 @@ class ReaderControllerTest {
     @Test
     void findReader_WhenIsOk_ThemReturnReader() throws Exception {
         Long readerId = 1L;
-        Reader reader = new Reader(1L, "Kharchenko", "Victoria",
-                Collections.emptyList());
+        Reader reader = new Reader(1L, "Victoria", "Kharchenko", "kharchenko@gmail.com", "0501111111",
+                Collections.emptySet());
         String valueAsString = objectMapper.writeValueAsString(reader);
         Mockito.when(readerService.findReader(readerId)).thenReturn(reader);
         mockMvc.perform(MockMvcRequestBuilders.get("/readers/{id}", readerId))
@@ -61,8 +66,8 @@ class ReaderControllerTest {
 
     @Test
     void saveReader_WhenIsOk_ThenReturnReader() throws Exception {
-        Reader reader = new Reader(1L, "Kharchenko", "Victoria",
-                Collections.emptyList());
+        Reader reader = new Reader(1L, "Victoria", "Kharchenko", "kharchenko@gmail.com", "0501111111",
+                Collections.emptySet());
         String valueAsString = objectMapper.writeValueAsString(reader);
         Mockito.when(readerService.findReader(reader.getId())).thenReturn(reader);
         Mockito.when(readerService.saveReader(any(Reader.class)))
@@ -74,10 +79,21 @@ class ReaderControllerTest {
     }
 
     @Test
+    void saveReader_WhenEmailNotValid_ThenReturn400Error() throws Exception {
+        Reader reader = new Reader(1L, "Victoria", "Kharchenko",
+                "kharchenko@gmailcom", "0501111111", Collections.emptySet());
+        String valueAsString = objectMapper.writeValueAsString(reader);
+        mockMvc.perform(MockMvcRequestBuilders.post("/readers")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(valueAsString))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void deleteReader_WhenIsOk() throws Exception {
         Long readerId = 1L;
-        Reader reader = new Reader(1L, "Kharchenko", "Victoria",
-                Collections.emptyList());
+        Reader reader = new Reader(1L, "Victoria", "Kharchenko", "kharchenko@gmail.com", "0501111111",
+                Collections.emptySet());
         Mockito.when(readerService.findReader(readerId)).thenReturn(reader);
         Mockito.when(readerService.deleteReader(readerId)).thenReturn(readerId);
         mockMvc.perform(delete("/readers/{id}", readerId))
@@ -100,8 +116,8 @@ class ReaderControllerTest {
     void takeBook_WhenIsOk() throws Exception {
         Long readerId = 1L;
         Long bookId = 1L;
-        Reader reader = new Reader(1L, "Kharchenko", "Victoria",
-                Collections.emptyList());
+        Reader reader = new Reader(1L, "Victoria", "Kharchenko", "kharchenko@gmail.com", "0501111111",
+                Collections.emptySet());
         String valueAsString = objectMapper.writeValueAsString(reader);
         Mockito.when(readerService.takeBook(readerId, bookId)).thenReturn(reader);
         mockMvc.perform(post("/readers/{readerId}/books/{bookId}", readerId, bookId)
@@ -149,8 +165,8 @@ class ReaderControllerTest {
     void returnBook_WhenIsOk() throws Exception {
         Long readerId = 1L;
         Long bookId = 1L;
-        Reader reader = new Reader(1L, "Kharchenko", "Victoria",
-                Collections.emptyList());
+        Reader reader = new Reader(1L, "Victoria", "Kharchenko", "kharchenko@gmail.com", "0501111111",
+                Collections.emptySet());
         String valueAsString = objectMapper.writeValueAsString(reader);
         Mockito.when(readerService.returnBook(readerId, bookId)).thenReturn(reader);
         mockMvc.perform(post("/readers/return/{readerId}/books/{bookId}",

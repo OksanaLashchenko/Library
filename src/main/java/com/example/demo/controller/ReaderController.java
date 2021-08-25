@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.List;
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,30 +23,35 @@ import lombok.RequiredArgsConstructor;
 public class ReaderController {
     private final ReaderService readerService;
 
+    @GetMapping
+    public ResponseEntity<List<Reader>> getAll() {
+        return ResponseEntity.ok(readerService.findAllReaders());
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Reader> getReader(@PathVariable Long id) {
+    public ResponseEntity<Reader> getReader(@PathVariable @Valid Long id) {
         return ResponseEntity.ok(readerService.findReader(id));
     }
 
     @PostMapping
-    public ResponseEntity<Reader> saveReader(@RequestBody Reader reader) {
+    public ResponseEntity<Reader> saveReader(@RequestBody @Valid Reader reader) {
         return ResponseEntity.ok(readerService.saveReader(reader));
     }
 
     @PostMapping("/{readerId}/books/{bookId}")
-    public ResponseEntity<Reader> takeBook(@PathVariable("readerId") Long readerId,
-                                         @PathVariable("bookId") Long bookId) {
+    public ResponseEntity<Reader> takeBook(@PathVariable("readerId") @Valid Long readerId,
+                                         @PathVariable("bookId") @Valid Long bookId) {
         return ResponseEntity.ok(readerService.takeBook(readerId, bookId));
     }
 
     @PostMapping("/return/{readerId}/books/{bookId}")
-    public ResponseEntity<Reader> returnBook(@PathVariable("readerId") Long readerId,
-                                             @PathVariable("bookId") Long bookId) {
+    public ResponseEntity<Reader> returnBook(@PathVariable("readerId") @Valid Long readerId,
+                                             @PathVariable("bookId") @Valid Long bookId) {
         return ResponseEntity.ok(readerService.returnBook(readerId, bookId));
     }
 
     @DeleteMapping("/{id}")
-    public Long deleteReader(@PathVariable Long id) {
+    public Long deleteReader(@PathVariable @Valid Long id) {
         readerService.deleteReader(id);
         return id;
     }
