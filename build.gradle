@@ -17,6 +17,7 @@ test {
 }
 
 apply plugin: 'checkstyle'
+
 checkstyle {
     toolVersion '7.8.1'
     configFile file("src/config/checkstyle/checkstyle.xml")
@@ -51,6 +52,10 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    mapstructSpringExtensionsVersion = "0.1.0"
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -66,6 +71,12 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     testImplementation 'org.mockito:mockito-core:3.+'
     testImplementation 'org.assertj:assertj-core:3.19.0'
+    implementation "org.mapstruct.extensions.spring:mapstruct-spring-annotations:${mapstructSpringExtensionsVersion}"
+    annotationProcessor "org.mapstruct.extensions.spring:mapstruct-spring-extensions:${mapstructSpringExtensionsVersion}"
+    testAnnotationProcessor "org.mapstruct.extensions.spring:mapstruct-spring-extensions:${mapstructSpringExtensionsVersion}"
+    implementation "org.mapstruct:mapstruct:1.4.2.Final"
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+    testAnnotationProcessor "org.mapstruct:mapstruct:1.4.2.Final"
 }
 
 test {

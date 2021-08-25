@@ -25,8 +25,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.example.demo.entity.Book;
 import com.example.demo.entity.Reader;
+import com.example.demo.entity.dto.BookDto;
 import com.example.demo.exception.LibraryNotFoundException;
 import com.example.demo.service.BookService;
+import com.example.demo.service.dto.mapping.BookMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
@@ -35,13 +37,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 class BookControllerTest {
     @MockBean
     private BookService bookService;
+    @MockBean
+    private BookMapper bookMapper;
     @Autowired
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
 
     @Test
-    void getAllBooks_WhenIsOk_ThenReturnListOfBooks() throws Exception {
+    void getAllBooks_WhenIsOk_ThenReturnListOfBookDto() throws Exception {
         Book book1 = new Book(1L,"Jane Air", "Charlotte Bronte",
                 456, null);
         Book book2 = new Book(2L, "War and Peace", "Lev Tolstoy",
@@ -52,9 +56,22 @@ class BookControllerTest {
         books.add(book1);
         books.add(book2);
         books.add(book3);
-
-        String valueAsString = objectMapper.writeValueAsString(books);
         Mockito.when(bookService.findAllBooks()).thenReturn(books);
+
+        BookDto bookDto1 = new BookDto("Jane Air", "Charlotte Bronte", null);
+        BookDto bookDto2 = new BookDto("War and Peace", "Lev Tolstoy", null);
+        BookDto bookDto3 = new BookDto("Anna Karenina", "Lev Tolstoy", null);
+        List<BookDto> booksDto = new ArrayList<>();
+        booksDto.add(bookDto1);
+        booksDto.add(bookDto2);
+        booksDto.add(bookDto3);
+
+        String valueAsString = objectMapper.writeValueAsString(booksDto);
+
+        Mockito.when(bookMapper.bookToBookDto(book1)).thenReturn(bookDto1);
+        Mockito.when(bookMapper.bookToBookDto(book2)).thenReturn(bookDto2);
+        Mockito.when(bookMapper.bookToBookDto(book3)).thenReturn(bookDto3);
+
         mockMvc.perform(MockMvcRequestBuilders.get("/books"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(valueAsString));
@@ -63,13 +80,19 @@ class BookControllerTest {
     @Test
     void findBookById_WhenIsOk_ThenReturnBook() throws Exception {
         Long bookId = 1L;
-        Reader reader = new Reader(1L, "Victoria", "Kharchenko", "kharchenko@gmail.com", "0501111111",
+        Long readerId = 1L;
+        Reader reader = new Reader(readerId, "Victoria", "Kharchenko", "kharchenko@gmail.com", "0501111111",
                 Collections.emptySet());
         Set<Reader> readerSet = new HashSet<>();
         readerSet.add(reader);
-        Book book = new Book(1L,"Jane Air", "Charlotte Bronte",
+        Book book = new Book(bookId,"Jane Air", "Charlotte Bronte",
                 456, readerSet);
-        String valueAsString = objectMapper.writeValueAsString(book);
+        Set<String> readerDtoSet = new HashSet<>();
+        readerDtoSet.add(reader.getLastName());
+        BookDto bookDto = new BookDto("Jane Air", "Charlotte Bronte", readerDtoSet);
+        String valueAsString = objectMapper.writeValueAsString(bookDto);
+
+        Mockito.when(bookMapper.bookToBookDto(book)).thenReturn(bookDto);
         Mockito.when(bookService.findBookById(bookId)).thenReturn(book);
         mockMvc.perform(MockMvcRequestBuilders.get("/books/{id}", bookId))
                 .andExpect(status().isOk())

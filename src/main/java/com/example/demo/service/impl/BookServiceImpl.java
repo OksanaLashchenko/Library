@@ -1,9 +1,6 @@
 package com.example.demo.service.impl;
 
-import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,23 +42,5 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public Book saveBook(Book book) {
         return bookRepository.save(book);
-    }
-
-    /**
-     * initBook() is a method designed for pre-initializing some books before starting the
-     * Library application.
-     */
-    @PostConstruct
-    public void initBook() {
-        Book book1 = new Book(1L, "Jane Air", "Charlotte Bronte",
-                456, Collections.emptySet());
-        Book book2 = new Book(2L, "War and Peace", "Lev Tolstoy",
-                968, Collections.emptySet());
-        Book book3 = new Book(3L, "Anna Karenina", "Lev Tolstoy",
-                654, Collections.emptySet());
-
-        bookRepository.save(book1);
-        bookRepository.save(book2);
-        bookRepository.save(book3);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.demo.lib;
+package com.example.demo.validation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

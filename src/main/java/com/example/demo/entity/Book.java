@@ -25,10 +25,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = "bookId")
+@EqualsAndHashCode(of = "bookId", callSuper = false)
 @Entity
 @Table(name = "books")
-public class Book {
+public class Book extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull

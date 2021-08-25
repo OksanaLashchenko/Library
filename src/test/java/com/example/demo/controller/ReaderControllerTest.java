@@ -21,12 +21,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.example.demo.entity.Reader;
+import com.example.demo.entity.dto.ReaderDto;
 import com.example.demo.exception.LibraryAlreadyBookedException;
 import com.example.demo.exception.LibraryNotFoundException;
-import com.example.demo.lib.ContactNumberValidator;
-import com.example.demo.lib.EmailValidator;
 import com.example.demo.service.BookService;
 import com.example.demo.service.ReaderService;
+import com.example.demo.service.dto.mapping.ReaderMapper;
+import com.example.demo.validation.ContactNumberValidator;
+import com.example.demo.validation.EmailValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
@@ -38,18 +40,24 @@ class ReaderControllerTest {
     ReaderService readerService;
     @MockBean
     BookService bookService;
+    @MockBean
+    ReaderMapper readerMapper;
     @Autowired
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
 
     @Test
-    void findReader_WhenIsOk_ThemReturnReader() throws Exception {
+    void findReader_WhenIsOk_ThenReturnReaderDto() throws Exception {
         Long readerId = 1L;
-        Reader reader = new Reader(1L, "Victoria", "Kharchenko", "kharchenko@gmail.com", "0501111111",
+        Reader reader = new Reader(1L, "Victoria", "Kharchenko",
+                "kharchenko@gmail.com", "0501111111",
                 Collections.emptySet());
-        String valueAsString = objectMapper.writeValueAsString(reader);
         Mockito.when(readerService.findReader(readerId)).thenReturn(reader);
+        ReaderDto readerDto = new ReaderDto("Victoria",
+                "Kharchenko", Collections.emptySet());
+        Mockito.when(readerMapper.readerToReaderDto(reader)).thenReturn(readerDto);
+        String valueAsString = objectMapper.writeValueAsString(readerDto);
         mockMvc.perform(MockMvcRequestBuilders.get("/readers/{id}", readerId))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(valueAsString));
@@ -65,10 +73,13 @@ class ReaderControllerTest {
     }
 
     @Test
-    void saveReader_WhenIsOk_ThenReturnReader() throws Exception {
+    void saveReader_WhenIsOk_ThenReturnReaderDto() throws Exception {
         Reader reader = new Reader(1L, "Victoria", "Kharchenko", "kharchenko@gmail.com", "0501111111",
                 Collections.emptySet());
+        ReaderDto readerDto = new ReaderDto("Victoria",
+                "Kharchenko", Collections.emptySet());
         String valueAsString = objectMapper.writeValueAsString(reader);
+        Mockito.when(readerMapper.readerToReaderDto(reader)).thenReturn(readerDto);
         Mockito.when(readerService.findReader(reader.getId())).thenReturn(reader);
         Mockito.when(readerService.saveReader(any(Reader.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
