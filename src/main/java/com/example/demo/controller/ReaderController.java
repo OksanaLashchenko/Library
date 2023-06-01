@@ -14,6 +14,8 @@ import com.example.demo.service.ReaderService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/readers")
@@ -23,6 +25,11 @@ public class ReaderController {
     @GetMapping("/{id}")
     public ResponseEntity<Reader> getReader(@PathVariable Long id) {
         return ResponseEntity.ok(readerService.findReader(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Reader>> getReader() {
+        return ResponseEntity.ok(readerService.findAllReaders());
     }
 
     @PostMapping
@@ -47,4 +54,5 @@ public class ReaderController {
         readerService.deleteReader(id);
         return id;
     }
+
 }

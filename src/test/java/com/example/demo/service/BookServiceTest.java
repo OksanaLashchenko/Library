@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.demo.entity.Book;
@@ -18,16 +17,20 @@ import com.example.demo.exception.LibraryNotFoundException;
 import com.example.demo.repository.BookRepository;
 import com.example.demo.service.impl.BookServiceImpl;
 
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
+
     @Mock
     private BookRepository bookRepository;
+
     @InjectMocks
     private BookServiceImpl bookService;
 
     @Test
     void findBookById_WhenBookNotExist_ThenThrowLibraryNotFoundException() {
-        Mockito.when(bookRepository.findBookById(1L)).thenReturn(Optional.empty());
+        when(bookRepository.findBookById(1L)).thenReturn(Optional.empty());
         Assertions.assertThatThrownBy(() -> bookService.findBookById(1L))
                 .isInstanceOf(LibraryNotFoundException.class);
     }
@@ -36,8 +39,10 @@ class BookServiceTest {
     void findBookById_WhenBookExists_ThenReturnBook() {
         Book book = new Book(1L, "Effective Java", "Bloch",
                 786, null);
-        Mockito.when(bookRepository.findBookById(1L)).thenReturn(Optional.of(book));
+        when(bookRepository.findBookById(1L)).thenReturn(Optional.of(book));
+
         Book resultBook = bookService.findBookById(1L);
+
         Assertions.assertThat(resultBook.getBookId()).isEqualTo(1L);
         Assertions.assertThat(resultBook.getTitle()).isEqualTo("Effective Java");
         Assertions.assertThat(resultBook.getAuthor()).isEqualTo("Bloch");
@@ -59,26 +64,27 @@ class BookServiceTest {
         bookList.add(book2);
         bookList.add(book3);
 
-        Mockito.when(bookRepository.findAll()).thenReturn(bookList);
+        when(bookRepository.findAll()).thenReturn(bookList);
         Assertions.assertThat(bookService.findAllBooks()).isEqualTo(bookList);
     }
 
     @Test
     void findAllBooks_WhenBooksNotExist_ThenReturnEmptyList() {
-        Mockito.when(bookRepository.findAll()).thenReturn(Collections.emptyList());
+        when(bookRepository.findAll()).thenReturn(Collections.emptyList());
         Assertions.assertThat(bookService.findAllBooks()).isEqualTo(Collections.emptyList());
     }
 
     @Test
     void deleteBook_WhenBookExists_ThenReturnBookId() {
-        Mockito.when(bookRepository.deleteBook(1L)).thenReturn(1L);
+        when(bookRepository.deleteBook(1L)).thenReturn(1L);
         Assertions.assertThat(bookService.deleteBook(1L)).isEqualTo(1L);
     }
 
     @Test
     void deleteBook_WhenBookNotExist_ThenThrowLibraryNotFoundException() {
-        Mockito.when(bookRepository.deleteBook(4L))
+        when(bookRepository.deleteBook(4L))
                 .thenThrow(LibraryNotFoundException.class);
+
         Assertions.assertThatThrownBy(() -> bookService.deleteBook(4L))
                 .isInstanceOf(LibraryNotFoundException.class);
     }
@@ -87,8 +93,10 @@ class BookServiceTest {
     void saveBook_WhenBookExists_ThenUpdateBook() {
         Book book = new Book(1L, "Effective Java", "Bloch",
                 786, null);
-        Mockito.when(bookRepository.saveBook(book)).thenReturn(book);
+        when(bookRepository.saveBook(book)).thenReturn(book);
+
         Book resultBook = bookService.saveBook(book);
+
         Assertions.assertThat(resultBook.getBookId()).isEqualTo(1L);
         Assertions.assertThat(resultBook.getTitle()).isEqualTo("Effective Java");
         Assertions.assertThat(resultBook.getAuthor()).isEqualTo("Bloch");
@@ -100,8 +108,10 @@ class BookServiceTest {
     void saveBook_WhenBookNotExists_ThenSaveNewBook() {
         Book book = new Book(4L, "Lord of the Rings", "Tolkien",
                 1186, null);
-        Mockito.when(bookRepository.saveBook(book)).thenReturn(book);
+        when(bookRepository.saveBook(book)).thenReturn(book);
+
         Book resultBook = bookService.saveBook(book);
+
         Assertions.assertThat(resultBook.getBookId()).isEqualTo(4L);
         Assertions.assertThat(resultBook.getTitle()).isEqualTo("Lord of the Rings");
         Assertions.assertThat(resultBook.getAuthor()).isEqualTo("Tolkien");

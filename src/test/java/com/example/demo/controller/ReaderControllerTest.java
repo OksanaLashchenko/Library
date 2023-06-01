@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -9,7 +10,6 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,12 +29,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ReaderController.class)
 class ReaderControllerTest {
+
     @MockBean
     ReaderService readerService;
     @MockBean
     BookService bookService;
+
     @Autowired
     MockMvc mockMvc;
+
     @Autowired
     ObjectMapper objectMapper;
 
@@ -44,7 +47,8 @@ class ReaderControllerTest {
         Reader reader = new Reader(1L, "Kharchenko", "Victoria",
                 Collections.emptyList());
         String valueAsString = objectMapper.writeValueAsString(reader);
-        Mockito.when(readerService.findReader(readerId)).thenReturn(reader);
+        when(readerService.findReader(readerId)).thenReturn(reader);
+
         mockMvc.perform(MockMvcRequestBuilders.get("/readers/{id}", readerId))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(valueAsString));
@@ -53,8 +57,9 @@ class ReaderControllerTest {
     @Test
     void findReader_WhenReaderNotFound_ThenReturn404Error() throws Exception {
         Long readerId = 1L;
-        Mockito.when(readerService.findReader(readerId))
+        when(readerService.findReader(readerId))
                 .thenThrow(LibraryNotFoundException.class);
+
         mockMvc.perform(MockMvcRequestBuilders.get("/readers/{id}", readerId))
                 .andExpect(status().isNotFound());
     }
@@ -64,9 +69,10 @@ class ReaderControllerTest {
         Reader reader = new Reader(1L, "Kharchenko", "Victoria",
                 Collections.emptyList());
         String valueAsString = objectMapper.writeValueAsString(reader);
-        Mockito.when(readerService.findReader(reader.getId())).thenReturn(reader);
-        Mockito.when(readerService.saveReader(any(Reader.class)))
+        when(readerService.findReader(reader.getId())).thenReturn(reader);
+        when(readerService.saveReader(any(Reader.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+
         mockMvc.perform(MockMvcRequestBuilders.post("/readers")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(valueAsString))
@@ -78,8 +84,9 @@ class ReaderControllerTest {
         Long readerId = 1L;
         Reader reader = new Reader(1L, "Kharchenko", "Victoria",
                 Collections.emptyList());
-        Mockito.when(readerService.findReader(readerId)).thenReturn(reader);
-        Mockito.when(readerService.deleteReader(readerId)).thenReturn(readerId);
+        when(readerService.findReader(readerId)).thenReturn(reader);
+        when(readerService.deleteReader(readerId)).thenReturn(readerId);
+
         mockMvc.perform(delete("/readers/{id}", readerId))
                 .andExpect(status().isOk());
     }
@@ -88,10 +95,11 @@ class ReaderControllerTest {
     void deleteReader_WhenReaderIsNotFound_ThenThrowLibraryNotFoundException()
             throws Exception {
         Long readerId = 5L;
-        Mockito.when(readerService.findReader(readerId))
+        when(readerService.findReader(readerId))
                 .thenThrow(LibraryNotFoundException.class);
-        Mockito.when(readerService.deleteReader(readerId))
+        when(readerService.deleteReader(readerId))
                 .thenThrow(LibraryNotFoundException.class);
+
         mockMvc.perform(delete("/readers/{id}", readerId))
                 .andExpect(status().isNotFound());
     }
@@ -103,7 +111,8 @@ class ReaderControllerTest {
         Reader reader = new Reader(1L, "Kharchenko", "Victoria",
                 Collections.emptyList());
         String valueAsString = objectMapper.writeValueAsString(reader);
-        Mockito.when(readerService.takeBook(readerId, bookId)).thenReturn(reader);
+        when(readerService.takeBook(readerId, bookId)).thenReturn(reader);
+
         mockMvc.perform(post("/readers/{readerId}/books/{bookId}", readerId, bookId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(valueAsString))
@@ -114,10 +123,11 @@ class ReaderControllerTest {
     void takeBook_WhenBookNotFound_ThenThrowLibraryNotFoundException() throws Exception {
         Long readerId = 1L;
         Long bookId = 5L;
-        Mockito.when(bookService.findBookById(bookId))
+        when(bookService.findBookById(bookId))
                 .thenThrow(LibraryNotFoundException.class);
-        Mockito.when(readerService.takeBook(readerId,bookId))
+        when(readerService.takeBook(readerId,bookId))
                 .thenThrow(LibraryNotFoundException.class);
+
         mockMvc.perform(post("/readers/{readerId}/books/{bookId}", readerId, bookId))
                 .andExpect(status().isNotFound());
     }
@@ -126,10 +136,11 @@ class ReaderControllerTest {
     void takeBook_WhenReaderNotFound_ThenThrowLibraryNotFoundException() throws Exception {
         Long readerId = 5L;
         Long bookId = 1L;
-        Mockito.when(readerService.findReader(readerId))
+        when(readerService.findReader(readerId))
                 .thenThrow(LibraryNotFoundException.class);
-        Mockito.when(readerService.takeBook(readerId, bookId))
+        when(readerService.takeBook(readerId, bookId))
                 .thenThrow(LibraryNotFoundException.class);
+
         mockMvc.perform(post("/readers/{readerId}/books/{bookId}", readerId, bookId))
                 .andExpect(status().isNotFound());
     }
@@ -139,8 +150,9 @@ class ReaderControllerTest {
             throws Exception {
         Long readerId = 1L;
         Long bookId = 1L;
-        Mockito.when(readerService.takeBook(readerId, bookId))
+        when(readerService.takeBook(readerId, bookId))
                 .thenThrow(LibraryAlreadyBookedException.class);
+
         mockMvc.perform(post("/readers/{readerId}/books/{bookId}", readerId, bookId))
                 .andExpect(status().isBadRequest());
     }
@@ -152,7 +164,8 @@ class ReaderControllerTest {
         Reader reader = new Reader(1L, "Kharchenko", "Victoria",
                 Collections.emptyList());
         String valueAsString = objectMapper.writeValueAsString(reader);
-        Mockito.when(readerService.returnBook(readerId, bookId)).thenReturn(reader);
+        when(readerService.returnBook(readerId, bookId)).thenReturn(reader);
+
         mockMvc.perform(post("/readers/return/{readerId}/books/{bookId}",
                 readerId, bookId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -164,10 +177,11 @@ class ReaderControllerTest {
     void returnBook_WhenBookNotFound_ThenThrowLibraryNotFoundException() throws Exception {
         Long readerId = 1L;
         Long bookId = 5L;
-        Mockito.when(bookService.findBookById(bookId))
+        when(bookService.findBookById(bookId))
                 .thenThrow(LibraryNotFoundException.class);
-        Mockito.when(readerService.returnBook(readerId,bookId))
+        when(readerService.returnBook(readerId,bookId))
                 .thenThrow(LibraryNotFoundException.class);
+
         mockMvc.perform(post("/readers/return/{readerId}/books/{bookId}",
                 readerId, bookId))
                 .andExpect(status().isNotFound());
@@ -177,12 +191,14 @@ class ReaderControllerTest {
     void returnBook_WhenReaderNotFound_ThenThrowLibraryNotFoundException() throws Exception {
         Long readerId = 5L;
         Long bookId = 1L;
-        Mockito.when(readerService.findReader(readerId))
+        when(readerService.findReader(readerId))
                 .thenThrow(LibraryNotFoundException.class);
-        Mockito.when(readerService.returnBook(readerId, bookId))
+        when(readerService.returnBook(readerId, bookId))
                 .thenThrow(LibraryNotFoundException.class);
+
         mockMvc.perform(post("/readers/return/{readerId}/books/{bookId}",
                 readerId, bookId))
                 .andExpect(status().isNotFound());
     }
+
 }

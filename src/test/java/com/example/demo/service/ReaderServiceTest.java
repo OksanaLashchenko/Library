@@ -22,10 +22,12 @@ import com.example.demo.service.impl.ReaderServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class ReaderServiceTest {
+
     @Mock
     private ReaderRepository readerRepository;
     @Mock
     private BookRepository bookRepository;
+
     @InjectMocks
     private ReaderServiceImpl readerService;
 

@@ -17,6 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ReaderServiceImpl implements ReaderService {
+
     private final ReaderRepository readerRepository;
     private final BookRepository bookRepository;
 
@@ -73,4 +74,10 @@ public class ReaderServiceImpl implements ReaderService {
         books.remove(book);
         return reader;
     }
+
+    @Override
+    public List<Reader> findAllReaders() {
+        return readerRepository.findAll();
+    }
+
 }

@@ -15,6 +15,7 @@ import com.example.demo.repository.BookRepository;
 
 @Repository
 public class BookRepositoryImpl implements BookRepository {
+
     private static final Map<Long, Book> DB_BOOK = new HashMap<>();
 
     @Override
@@ -56,4 +57,5 @@ public class BookRepositoryImpl implements BookRepository {
         DB_BOOK.put(2L, book2);
         DB_BOOK.put(3L, book3);
     }
+
 }

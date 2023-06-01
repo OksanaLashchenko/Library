@@ -10,10 +10,10 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class Book {
     private Long bookId;
     private String title;

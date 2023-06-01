@@ -16,6 +16,7 @@ import com.example.demo.repository.ReaderRepository;
 
 @Repository
 public class ReaderRepositoryImpl implements ReaderRepository {
+
     private static final Map<Long, Reader> DB_READER = new HashMap<>();
 
     @Override
@@ -37,6 +38,11 @@ public class ReaderRepositoryImpl implements ReaderRepository {
     @Override
     public Optional<Reader> findReader(Long id) {
         return Optional.ofNullable(DB_READER.get(id));
+    }
+
+    @Override
+    public List<Reader> findAll() {
+        return new ArrayList<>(DB_READER.values());
     }
 
     @PostConstruct
