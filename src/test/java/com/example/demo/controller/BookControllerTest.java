@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.example.demo.dto.BookDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,12 +63,12 @@ class BookControllerTest {
     @Test
     void findBookById_WhenIsOk_ThenReturnBook() throws Exception {
         Long bookId = 1L;
-        Reader reader = new Reader(1L, "Victoria", "Kharchenko",
-                Collections.emptyList());
-        Book book = new Book(1L,"Jane Air", "Charlotte Bronte",
-                456, reader);
+        Reader reader = new Reader(1L, "Victoria", "Kharchenko", Collections.emptyList());
+        Book book = new Book(1L,"Jane Air", "Charlotte Bronte", 456, reader);
+        BookDto bookDto = new BookDto(1L,"Jane Air", "Charlotte Bronte", 456);
+
         String valueAsString = objectMapper.writeValueAsString(book);
-        when(bookService.findBookById(bookId)).thenReturn(book);
+        when(bookService.findBookById(bookId)).thenReturn(bookDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/books/{id}", bookId))
                 .andExpect(status().isOk())
@@ -87,7 +88,8 @@ class BookControllerTest {
     void saveBook_WhenIsOk_ThenReturnBook() throws Exception {
         Book book = new Book(1L, "Jane Air", "Charlotte Bronte",
                 456, null);
-        when(bookService.findBookById(book.getBookId())).thenReturn(book);
+        BookDto bookDto = new BookDto(1L, "Jane Air", "Charlotte Bronte", 456);
+        when(bookService.findBookById(book.getBookId())).thenReturn(bookDto);
         when(bookService.saveBook(any(Book.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
         String valueAsString = objectMapper.writeValueAsString(book);
@@ -101,9 +103,8 @@ class BookControllerTest {
     @Test
     void deleteBook_WhenIsOk() throws Exception {
         Long bookId = 1L;
-        Book book = new Book(1L, "Jane Air", "Charlotte Bronte",
-                456, null);
-        when(bookService.findBookById(bookId)).thenReturn(book);
+        BookDto bookDto = new BookDto(1L, "Jane Air", "Charlotte Bronte", 456);
+        when(bookService.findBookById(bookId)).thenReturn(bookDto);
         when(bookService.deleteBook(bookId)).thenReturn(bookId);
 
         mockMvc.perform(delete("/books/{id}", bookId))

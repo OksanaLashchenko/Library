@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.demo.dto.BookDto;
+import com.example.demo.mapper.BookMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +26,8 @@ class BookServiceTest {
 
     @Mock
     private BookRepository bookRepository;
-
+    @Mock
+    private BookMapper bookMapper;
     @InjectMocks
     private BookServiceImpl bookService;
 
@@ -37,17 +40,17 @@ class BookServiceTest {
 
     @Test
     void findBookById_WhenBookExists_ThenReturnBook() {
-        Book book = new Book(1L, "Effective Java", "Bloch",
-                786, null);
+        Book book = new Book(1L, "Effective Java", "Bloch", 786, null);
+        BookDto bookDto = new BookDto(1L, "Effective Java", "Bloch", 786);
         when(bookRepository.findBookById(1L)).thenReturn(Optional.of(book));
+        when(bookMapper.toBookDto(book)).thenReturn(bookDto);
 
-        Book resultBook = bookService.findBookById(1L);
+        BookDto resultBook = bookService.findBookById(1L);
 
         Assertions.assertThat(resultBook.getBookId()).isEqualTo(1L);
         Assertions.assertThat(resultBook.getTitle()).isEqualTo("Effective Java");
         Assertions.assertThat(resultBook.getAuthor()).isEqualTo("Bloch");
         Assertions.assertThat(resultBook.getPages()).isEqualTo(786);
-        Assertions.assertThat(resultBook.getReader()).isNull();
     }
 
     @Test

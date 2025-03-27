@@ -1,10 +1,10 @@
 package com.example.demo.service.impl;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
 
+import com.example.demo.dto.BookDto;
+import com.example.demo.mapper.BookMapper;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Book;
@@ -15,15 +15,18 @@ import com.example.demo.service.BookService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class BookServiceImpl implements BookService {
+
     private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Override
-    public Book findBookById(Long id) {
-        return bookRepository.findBookById(id)
+    public BookDto findBookById(Long id) {
+        Book book = bookRepository.findBookById(id)
                 .orElseThrow(() -> new LibraryNotFoundException(
                         String.format("Can't find book by id %d", id)));
+        return bookMapper.toBookDto(book);
     }
 
     @Override

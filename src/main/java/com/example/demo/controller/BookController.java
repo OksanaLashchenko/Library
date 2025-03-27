@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import com.example.demo.dto.BookDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +30,8 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> findBookById(@PathVariable Long id) {
-        return ResponseEntity.ok(bookService.findBookById(id));
+    public BookDto findBookById(@PathVariable Long id) {
+        return bookService.findBookById(id);
     }
 
     @PostMapping
