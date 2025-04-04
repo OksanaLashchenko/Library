@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.demo.dto.BookDto;
+import com.example.demo.domain.dto.BookDto;
 import com.example.demo.mapper.BookMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

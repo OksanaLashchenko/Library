@@ -2,7 +2,7 @@ package com.example.demo.service.impl;
 
 import java.util.List;
 
-import com.example.demo.dto.BookDto;
+import com.example.demo.domain.dto.BookDto;
 import com.example.demo.mapper.BookMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,8 +11,6 @@ import com.example.demo.entity.Book;
 import com.example.demo.exception.LibraryNotFoundException;
 import com.example.demo.repository.BookRepository;
 import com.example.demo.service.BookService;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @AllArgsConstructor

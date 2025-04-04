@@ -2,7 +2,8 @@ package com.example.demo.controller;
 
 import java.util.List;
 
-import com.example.demo.dto.BookDto;
+import com.example.demo.domain.dto.BookDto;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
